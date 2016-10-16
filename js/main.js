@@ -163,11 +163,13 @@ function Box(centX, color) {
 	this.update = false;
 	this.heightBooster = 100;
 	this.currentArray = [];
+	this.pitchArray = [];
+	this.color = color;
+
 	this.erase = function() {
 		fill(255);
 		this.drawBorder();
 	}
-	this.color = color;
 
 	// take in giant array and make image.... . figure out in the morning
 	this.updateSamples = function(bigAssArray) {
@@ -191,6 +193,7 @@ function Box(centX, color) {
 		this.positiveArr = [];
 		this.negativeArr = [];
 		this.erase();
+		strokeWeight(1);
 		for (let i = 0; i < this.currentArray.length; i+=80) {
 			var currentVal = this.currentArray[i];
 			if (currentVal >= 0) {
@@ -221,7 +224,40 @@ function Box(centX, color) {
 		this.update = true;
 	};
 
+
+	this.makePitchArray = function() {
+		var temp = [];
+		var bufferSize = 100;
+		this.pitchArray = [];
+
+		for (let i = 0; i < this.currentArray.length; i++) {
+			temp.push(this.currentArray[i]);
+			if (i % bufferSize === 0) { 
+				// execute
+				this.pitchArray.push(autoCorrelate(temp, 44100));
+				// reset
+				temp = [];
+			}
+		}
+	}
+
+	this.drawPitchArray = function() {
+		strokeWeight(10);
+		for (let i = 0; i < this.pitchArray.length; i++) {
+			if (this.pitchArray[i] === -1) {
+				point((((i * this.width) / this.pitchArray.length) + (this.centerX - (this.width / 2))), 0);
+			} else {
+				point(
+						(((i * this.width) / this.pitchArray.length) + (this.centerX - (this.width / 2))), // x
+					    this.height - (((this.pitchArray[i]) * this.height) / 2000) // y
+				);
+			}
+		}
+
+	}
+
 	this.drawBorder = function() {
+		strokeWeight(1);
 		rect(this.centerX - (this.width / 2), 0, this.width, this.height);
 	};
 }
@@ -229,7 +265,6 @@ function Box(centX, color) {
 
 var fBox;
 var jBox;
-
 // Box.prototype.updateImage = function() {
 // };
 
@@ -247,6 +282,8 @@ function setup() {
 function draw() {
 	if (fBox.update) {
 		fBox.updateAndDrawSamplesFilledIn();
+		fBox.makePitchArray();
+		fBox.drawPitchArray();
 		fBox.update = false;
 	}
 
