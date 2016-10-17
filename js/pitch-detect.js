@@ -14,7 +14,7 @@ function autoCorrelate( buf, sampleRate ) {
     rms += val*val;
   }
   rms = Math.sqrt(rms/SIZE);
-  if (rms<0.01) // not enough signal
+  if (rms<0.03) // not enough signal // was 0.01
     return -1;
 
   var lastCorrelation=1;

@@ -160,7 +160,7 @@ function Box(centX, color) {
 	this.centerY = displayHeight / 4;
 	this.width = displayWidth / 2;
 	this.height = displayHeight / 2;
-	this.update = false;
+	this.updateP5js = false;
 	this.heightBooster = 100;
 	this.currentArray = [];
 	this.pitchArray = [];
@@ -174,7 +174,7 @@ function Box(centX, color) {
 	// take in giant array and make image.... . figure out in the morning
 	this.updateSamples = function(bigAssArray) {
 		this.currentArray = bigAssArray[0];
-		this.update = true; // updated 'after' array is ready to go
+		this.updateP5js = true; // activate update in p5js draw() loop
 	};
 
 	this.drawSamples = function() {
@@ -221,22 +221,34 @@ function Box(centX, color) {
 
 		endShape(CLOSE);
 
-		this.update = true;
+		this.updateP5js = true;
 	};
 
 
 	this.makePitchArray = function() {
 		var temp = [];
-		var bufferSize = 1000;
+		var bufferSize = 1000; // how many samples at a time to guess the pitch... oo what about going 0-1000, then 1-1001
 		this.pitchArray = [];
-		for (let i = 0; i < this.currentArray.length; i++) {
-			temp.push(this.currentArray[i]);
-			if (i % bufferSize === 0) { 
-				// execute
-				this.pitchArray.push(autoCorrelate(temp, 44100));
-				// reset
-				temp = [];
+
+		// relatively low detail but fast...
+		// for (let i = 0; i < this.currentArray.length; i++) {
+		// 	temp.push(this.currentArray[i]);
+		// 	if (i % bufferSize === 0) { 
+		// 		// execute
+		// 		this.pitchArray.push(autoCorrelate(temp, 44100));
+		// 		// reset
+		// 		temp = [];
+		// 	}
+		// }
+
+		// this gets a LOT more detail
+		for (let i = bufferSize; i < this.currentArray.length; i++) {
+			while (temp.length !== bufferSize) {
+				temp.push(this.currentArray[i]);
+				continue;
 			}
+			this.pitchArray.push(autoCorrelate(temp, 44100));
+			temp.shift();
 		}
 	}
 
@@ -244,9 +256,7 @@ function Box(centX, color) {
 		strokeWeight(7);
 		stroke(127);
 		for (let i = 0; i < this.pitchArray.length; i++) {
-			if (this.pitchArray[i] === -1) {
-				point((((i * this.width) / this.pitchArray.length) + (this.centerX - (this.width / 2))), 0);
-			} else {
+			if (this.pitchArray[i] !== -1) {
 				point(
 						(((i * this.width) / this.pitchArray.length) + (this.centerX - (this.width / 2))), // x
 					    this.height - (((this.pitchArray[i]) * this.height) / 2000) // y
@@ -255,54 +265,65 @@ function Box(centX, color) {
 		}
 	}
 
-	this.drawPitchArrayTwo = function() { // using maths
+	this.drawSmoothGestures = function() { 
+
 
 		// consider normalizing that audio if the algorithm rejects values under a certain volume level
-		strokeWeight(7);
-		stroke(0);
-		var arrayOfNonNegativeOneArrays = [];
-		var arrayOfNewlyRegressed = [];
-		
-		// make separate arrays of non -1 return values
-		var tempGoodSet = [];
-		var originalLength = this.pitchArray.length; // retain original min/max to place it visually in the correct location
 
+		var makeArrayOfGestures = function(pitchArray) {
 
-		for (let i = 0; i < this.pitchArray.length; i++) {
-			if (this.pitchArray[i] !== -1) { // if a good value
-				tempGoodSet.push([i, this.pitchArray[i]]); // push it as unedited coordinate
-			} else { // it's a stupid -1 value
-				if (tempGoodSet.length > 1) { // it's not empty or has 1 meaningless value in it
-					arrayOfNonNegativeOneArrays.push(tempGoodSet); // push what we have...
+			var arrayOfGestures = [];
+			var temp = [];
+
+			// go through pitchArray and make individual gestures
+			var len = pitchArray.length;
+
+			for (let x = 0; x < len; x++) {
+				var y = pitchArray[x];
+				if ((y !== -1) && (x !== len - 1)) { // if a good value (and not at very end -- cuts last value)
+					temp.push([x, y]); 				 // push it as unedited coordinate
+				} else { 							 // it's a stupid -1 value
+					if (temp.length > 1) { 			 // it's not empty or has 1 meaningless value in it
+						arrayOfGestures.push(temp);  // push what we have...
+					}
+					temp = []; 						 // reset it
 				}
-				tempGoodSet = []; // reset it
 			}
-		}
-		// if there is still something in it, push it....
-		if (tempGoodSet.length > 1) {
-			arrayOfNonNegativeOneArrays.push(tempGoodSet);
-		}
-		// get a smoother value set for each one....
-		for (let i = 0; i < arrayOfNonNegativeOneArrays.length; i++) {
-			var gesture = arrayOfNonNegativeOneArrays[i]; // this was 'data' in a previous example
-			var regress = regression('polynomial', gesture, 3); 
-			arrayOfNewlyRegressed.push(regress.points);
+			return arrayOfGestures;
 		}
 
-		// problems so far::: 1. why aren't the math smoothed ones different? 2. why don't the math smooth ones extend as far as the normal ones? 3. why can it detect whistles better than speaking...
+		var makeArrayOfSmoothGestures = function(arrayOfGestures) {
+			// get a smoother value set for each one....
+			var arrayOfSmoothGestures = [];
+			for (let i = 0; i < arrayOfGestures.length; i++) {
+				var gesture = arrayOfGestures[i]; // this was 'data' in a previous example
+				var regress = regression('polynomial', gesture, 4); 
+				arrayOfSmoothGestures.push(regress.points);
+			}
+			return arrayOfSmoothGestures;
 
-		// plot the smooth ones, draw, separate this later?
-		strokeWeight(7);
-		noFill();
-		for (let i = 0; i < arrayOfNewlyRegressed.length; i++) { // iterate through each gesture
+		}
+
+
+		var drawSmoothGesture = function(gesture, originalLength, width, height, centerX) {
+			strokeWeight(7);
+			stroke(0);
+			noFill();
 			beginShape();
-			for (let j = 0; j < arrayOfNewlyRegressed[i].length; j++) { // iterate through each coordinate in each gesture
-				curveVertex(
-					(((j * this.width) / originalLength) + (this.centerX - (this.width / 2))), // x
-					this.height - (((this.pitchArray[j]) * this.height) / 2000) // y
-				);
+			// debugger;
+			for (let j = 0; j < gesture.length; j++) { // iterate through each coordinate in each gesture
+				var x = (((gesture[j][0] * width) / originalLength) + (centerX - (width / 2)));
+				var y = height - ((gesture[j][1] * height) / 2000);
+				curveVertex(x, y);
 			}
 			endShape();
+		}
+
+		// draw smooth gestures
+		var originalLength = this.pitchArray.length; // retain original min/max to place it visually in the correct location
+		var arrayOfSmoothGestures = makeArrayOfSmoothGestures(makeArrayOfGestures(this.pitchArray));
+		for (let i = 0; i < arrayOfSmoothGestures.length; i++) {
+			drawSmoothGesture(arrayOfSmoothGestures[i], originalLength, this.width, this.height, this.centerX);
 		}
 
 	}
@@ -331,18 +352,24 @@ function setup() {
 }
 
 function draw() {
-	if (fBox.update) {
+	if (fBox.updateP5js) {
 		fBox.updateAndDrawSamplesFilledIn();
-		fBox.makePitchArray();
 
-		fBox.drawPitchArrayTwo();
-		fBox.drawPitchArray();
-		fBox.update = false;
+		fBox.makePitchArray();
+		fBox.drawSmoothGestures();
+		// fBox.drawPitchArray();
+
+		fBox.updateP5js = false;
 	}
 
-	if (jBox.update) {
+	if (jBox.updateP5js) {
 		jBox.updateAndDrawSamplesFilledIn();
-		jBox.update = false;
+
+		jBox.makePitchArray();
+		jBox.drawSmoothGestures();
+		// jBox.drawPitchArray();
+
+		jBox.updateP5js = false;
 	}
 
 }
