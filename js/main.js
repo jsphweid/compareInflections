@@ -57,6 +57,9 @@ $( document ).ready(function() {
 	});
 
 
+
+
+
 });
 
 
@@ -353,16 +356,21 @@ function setup() {
 
 function draw() {
 	if (fBox.updateP5js) {
+		$("html").addClass("wait"); // $$$$ why is this not working????????
 		fBox.updateAndDrawSamplesFilledIn();
 
 		fBox.makePitchArray();
 		fBox.drawSmoothGestures();
 		// fBox.drawPitchArray();
 
+
 		fBox.updateP5js = false;
+		$("html").removeClass("wait");
 	}
 
 	if (jBox.updateP5js) {
+		$("html").addClass("wait");
+
 		jBox.updateAndDrawSamplesFilledIn();
 
 		jBox.makePitchArray();
@@ -370,6 +378,8 @@ function draw() {
 		// jBox.drawPitchArray();
 
 		jBox.updateP5js = false;
+		$("html").removeClass("wait");
+
 	}
 
 }
