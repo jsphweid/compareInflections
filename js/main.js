@@ -227,9 +227,8 @@ function Box(centX, color) {
 
 	this.makePitchArray = function() {
 		var temp = [];
-		var bufferSize = 100;
+		var bufferSize = 1000;
 		this.pitchArray = [];
-
 		for (let i = 0; i < this.currentArray.length; i++) {
 			temp.push(this.currentArray[i]);
 			if (i % bufferSize === 0) { 
@@ -242,7 +241,8 @@ function Box(centX, color) {
 	}
 
 	this.drawPitchArray = function() {
-		strokeWeight(10);
+		strokeWeight(7);
+		stroke(127);
 		for (let i = 0; i < this.pitchArray.length; i++) {
 			if (this.pitchArray[i] === -1) {
 				point((((i * this.width) / this.pitchArray.length) + (this.centerX - (this.width / 2))), 0);
@@ -252,6 +252,57 @@ function Box(centX, color) {
 					    this.height - (((this.pitchArray[i]) * this.height) / 2000) // y
 				);
 			}
+		}
+	}
+
+	this.drawPitchArrayTwo = function() { // using maths
+
+		// consider normalizing that audio if the algorithm rejects values under a certain volume level
+		strokeWeight(7);
+		stroke(0);
+		var arrayOfNonNegativeOneArrays = [];
+		var arrayOfNewlyRegressed = [];
+		
+		// make separate arrays of non -1 return values
+		var tempGoodSet = [];
+		var originalLength = this.pitchArray.length; // retain original min/max to place it visually in the correct location
+
+
+		for (let i = 0; i < this.pitchArray.length; i++) {
+			if (this.pitchArray[i] !== -1) { // if a good value
+				tempGoodSet.push([i, this.pitchArray[i]]); // push it as unedited coordinate
+			} else { // it's a stupid -1 value
+				if (tempGoodSet.length > 1) { // it's not empty or has 1 meaningless value in it
+					arrayOfNonNegativeOneArrays.push(tempGoodSet); // push what we have...
+				}
+				tempGoodSet = []; // reset it
+			}
+		}
+		// if there is still something in it, push it....
+		if (tempGoodSet.length > 1) {
+			arrayOfNonNegativeOneArrays.push(tempGoodSet);
+		}
+		// get a smoother value set for each one....
+		for (let i = 0; i < arrayOfNonNegativeOneArrays.length; i++) {
+			var gesture = arrayOfNonNegativeOneArrays[i]; // this was 'data' in a previous example
+			var regress = regression('polynomial', gesture, 3); 
+			arrayOfNewlyRegressed.push(regress.points);
+		}
+
+		// problems so far::: 1. why aren't the math smoothed ones different? 2. why don't the math smooth ones extend as far as the normal ones? 3. why can it detect whistles better than speaking...
+
+		// plot the smooth ones, draw, separate this later?
+		strokeWeight(7);
+		noFill();
+		for (let i = 0; i < arrayOfNewlyRegressed.length; i++) { // iterate through each gesture
+			beginShape();
+			for (let j = 0; j < arrayOfNewlyRegressed[i].length; j++) { // iterate through each coordinate in each gesture
+				curveVertex(
+					(((j * this.width) / originalLength) + (this.centerX - (this.width / 2))), // x
+					this.height - (((this.pitchArray[j]) * this.height) / 2000) // y
+				);
+			}
+			endShape();
 		}
 
 	}
@@ -283,6 +334,8 @@ function draw() {
 	if (fBox.update) {
 		fBox.updateAndDrawSamplesFilledIn();
 		fBox.makePitchArray();
+
+		fBox.drawPitchArrayTwo();
 		fBox.drawPitchArray();
 		fBox.update = false;
 	}
