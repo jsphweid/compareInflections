@@ -1,77 +1,63 @@
 <!doctype html>
 <html class="no-js" lang="">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>Compare Inflections App</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Compare Inflections App</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link rel="stylesheet" href="css/bootstrap.min.css">
-        <style>
-            body {
-                height: 100vh;
-            }
-        </style>
-        <link rel="stylesheet" href="css/bootstrap-theme.min.css">
-        <link rel="stylesheet" href="css/main.css">
+    <style>
+        body {
+            height: 100vh;
+        }
+    </style>
+    <!--  all files in the offline folder will be replaced by their cdn minified equivalents -->
 
-        <script src="js/vendor/modernizr-2.8.3.min.js"></script>
-        <!-- p5js -->
-        <script language="javascript" type="text/javascript" src="js/p5.js"></script>
+    <!-- bootstrap -->
+    <link rel="stylesheet" href="offline/bootstrap-theme.css">
+    <link rel="stylesheet" href="offline/bootstrap.css">
 
-    </head>
-    <body>
+    <!-- custom -->
+    <link rel="stylesheet" href="css/main.css">
+
+    <!-- p5js -->
+    <script src="offline/p5.js"></script>
+</head>
+
+<body>
     <div class="container">
-  <!--     <div class="row">
-        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-              <a class="navbar-brand" href="#">Compare Inflections</a>
-            </div>
-          </div>
-        </nav>
-      </div> -->
 
-      <div class="row"> 
-          <h2>Recordings</h2>
-          <p>'f' is the left side and 'j' is the right side</p>
-          <p>Hold to record and release to stop recording. Currently whistling produces the best results, which basically means this is pretty worthless at the moment.</p>
-          <ul id="recordingslist"></ul>
+        <div class="row"> 
+            <h2>Recordings</h2>
+            <p>'f' is the left side and 'j' is the right side</p>
+            <p>Hold to record and release to stop recording. Currently whistling produces the best results, which basically means this is pretty worthless at the moment.</p>
+            <ul id="recordingslist"></ul>
 
-      </div>
+        </div>
 
-      <div id="p5jsDiv" class="row">
-      </div>
+        <div id="p5jsDiv" class="row"></div>
 
     </div> <!-- /container -->
 
 
-    <!-- jquery -->
-    <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> -->
-    <script type="text/javascript" src="offline/jquery.min.js"></script>
-    <!-- <script src="js/vendor/jquery-1.11.2.min.js"></script> -->
 
-    <!-- regression -->
-    <!-- <script src="http://cdn.jsdelivr.net/jquery.flot/0.8.3/jquery.flot.min.js"></script> -->
-    <script type="text/javascript" src="offline/jquery.flot.min.js"></script>
-    <script src="js/regression.min.js"></script>
+    <!-- jquery -->
+    <script src="offline/jquery.min.js"></script>
 
     <!-- bootstrap -->
-    <script src="js/vendor/bootstrap.min.js"></script>
+    <script src="offline/bootstrap.js"></script>
 
-    <!-- pitch detect -->
-    <script type="text/javascript" src="js/pitch-detect.js"></script>
+    <!-- regression -->
+    <script src="offline/jquery.flot.min.js"></script>
+    <script src="lib/regression.min.js"></script>
 
     <!-- recorder -->
-    <script type="text/javascript" src="js/recorder.js"></script>
+    <script src="lib/recorder.js"></script>
 
+    <!-- pitch detect -->
+    <script src="js/pitch-detect.js"></script>
+    
     <script src="js/main.js"></script>
-    </body>
+</body>
 </html>

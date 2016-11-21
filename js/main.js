@@ -81,7 +81,7 @@ function bootRecorder() {
 	navigator.getUserMedia({audio: true}, startUserMedia, function(e) {
 		console.log('No live audio input: ' + e);
 	});
-};
+}
 
 
 
@@ -137,23 +137,23 @@ function getBufferCallback( buffers ) {
     newSource.start(0);
 }
 
-function createDownloadLink() {
-	recorder && recorder.exportWAV(function(blob) {
-		var url = URL.createObjectURL(blob);
-		var li = document.createElement('li');
-		var au = document.createElement('audio');
-		var hf = document.createElement('a');
+// function createDownloadLink() {
+// 	recorder && recorder.exportWAV(function(blob) {
+// 		var url = URL.createObjectURL(blob);
+// 		var li = document.createElement('li');
+// 		var au = document.createElement('audio');
+// 		var hf = document.createElement('a');
 
-		au.controls = true;
-		au.src = url;
-		hf.href = url;
-		hf.download = new Date().toISOString() + '.wav';
-		hf.innerHTML = hf.download;
-		li.appendChild(au);
-		li.appendChild(hf);
-		recordingslist.appendChild(li); // look at original to find more about this
-	});
-}
+// 		au.controls = true;
+// 		au.src = url;
+// 		hf.href = url;
+// 		hf.download = new Date().toISOString() + '.wav';
+// 		hf.innerHTML = hf.download;
+// 		li.appendChild(au);
+// 		li.appendChild(hf);
+// 		recordingslist.appendChild(li); // look at original to find more about this
+// 	});
+// }
 
 function Box(centX, color) {
 	this.centerX = centX; // should be displayWidth * 1/4 and * 3/4
@@ -169,7 +169,7 @@ function Box(centX, color) {
 	this.erase = function() {
 		fill(255);
 		this.drawBorder();
-	}
+	};
 
 	// take in giant array and make image.... . figure out in the morning
 	this.updateSamples = function(bigAssArray) {
@@ -250,7 +250,7 @@ function Box(centX, color) {
 			this.pitchArray.push(autoCorrelate(temp, 44100));
 			temp.shift();
 		}
-	}
+	};
 
 	this.drawPitchArray = function() {
 		strokeWeight(7);
@@ -263,7 +263,7 @@ function Box(centX, color) {
 				);
 			}
 		}
-	}
+	};
 
 	this.drawSmoothGestures = function() { 
 
@@ -290,7 +290,7 @@ function Box(centX, color) {
 				}
 			}
 			return arrayOfGestures;
-		}
+		};
 
 		var makeArrayOfSmoothGestures = function(arrayOfGestures) {
 			// get a smoother value set for each one....
@@ -302,7 +302,7 @@ function Box(centX, color) {
 			}
 			return arrayOfSmoothGestures;
 
-		}
+		};
 
 
 		var drawSmoothGesture = function(gesture, originalLength, width, height, centerX) {
@@ -317,7 +317,7 @@ function Box(centX, color) {
 				curveVertex(x, y);
 			}
 			endShape();
-		}
+		};
 
 		// draw smooth gestures
 		var originalLength = this.pitchArray.length; // retain original min/max to place it visually in the correct location
@@ -326,7 +326,7 @@ function Box(centX, color) {
 			drawSmoothGesture(arrayOfSmoothGestures[i], originalLength, this.width, this.height, this.centerX);
 		}
 
-	}
+	};
 
 	this.drawBorder = function() {
 		strokeWeight(1);
@@ -343,8 +343,8 @@ var jBox;
 
 function setup() {
 	createCanvas(displayWidth, displayHeight);
-	fBox = new Box(displayWidth * .25, 'red');
-	jBox = new Box(displayWidth * .75, 'blue');
+	fBox = new Box(displayWidth * 0.25, 'red');
+	jBox = new Box(displayWidth * 0.75, 'blue');
 	fBox.drawBorder();
 	jBox.drawBorder();
 	frameRate(5); // doesn't need to be that fast...

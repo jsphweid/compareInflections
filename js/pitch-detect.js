@@ -21,7 +21,7 @@ function autoCorrelate( buf, sampleRate ) {
   for (var offset = MIN_SAMPLES; offset < MAX_SAMPLES; offset++) {
     var correlation = 0;
 
-    for (var i=0; i<MAX_SAMPLES; i++) {
+    for (let i=0; i<MAX_SAMPLES; i++) {
       correlation += Math.abs((buf[i])-(buf[i+offset]));
     }
     correlation = 1 - (correlation/MAX_SAMPLES);
