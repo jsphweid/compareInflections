@@ -53,10 +53,6 @@ module.exports = function(grunt) {
                             replacement: '<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>'
                         },
                         {
-                            pattern: '<script src="offline/jquery.flot.min.js"></script>',
-                            replacement: '<script src="http://cdn.jsdelivr.net/jquery.flot/0.8.3/jquery.flot.min.js"></script>'
-                        },
-                        {
                             pattern: '<script src="offline/p5.js"></script>',
                             replacement: '<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.4/p5.min.js"></script>'
                         }
