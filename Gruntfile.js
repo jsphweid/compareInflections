@@ -19,7 +19,7 @@ module.exports = function(grunt) {
         // copy
         copy: {
             main: {
-                src: ['**/*', '!**/node_modules/**', '!**/offline/**', '!**/.gitignore', '!**/package.json', '!**/.git', '!**/Gruntfile.js'],
+                src: ['**/*', '!**/node_modules/**', '!**/offline/**', '!**/.gitignore', '!**/package.json', '!**/.git', '!**/Gruntfile.js', '!**/README.md'],
                 expand: true,
                 // cwd: 'compareInflections',
                 dest: 'build'
