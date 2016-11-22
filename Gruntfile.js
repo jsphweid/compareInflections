@@ -36,7 +36,7 @@ module.exports = function(grunt) {
                         },
                         {
                             pattern: '<script src="offline/bootstrap.js"></script>',
-                            replacement: '<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/libbootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>'
+                            replacement: '<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>'
                         },
                         {
                             pattern: '<script src="offline/jquery.min.js"></script>',
@@ -62,7 +62,7 @@ module.exports = function(grunt) {
             },
             options: {
                 compress: {
-                    drop_console: true
+                    // drop_console: true // dropping the console here takes away some critical function
                 }
             }
         },
@@ -137,6 +137,5 @@ module.exports = function(grunt) {
     grunt.registerTask('js-hint', ['jshint']);
     grunt.registerTask('html-hint', ['htmlhint']);
     grunt.registerTask('build', ['clean', 'copy', 'string-replace', 'babel', 'uglify', 'htmlmin']);
-    grunt.registerTask('bb', ['htmlmin']);
 
 };
