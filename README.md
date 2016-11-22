@@ -14,6 +14,6 @@ Currently, the algorithm used to determine how the pitch changes isn't very good
 
 `http-server` to serve up the app
 
-`grunt jshint` to jshint on '/js' files (but not its subfolders)
+`grunt js-hint` to jshint on '/js' files and `grunt html-hint` to root html files (index.html)
 
 `grunt build` to make production build to '/build' folder
