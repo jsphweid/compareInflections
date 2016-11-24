@@ -17,3 +17,7 @@ Currently, the algorithm used to determine how the pitch changes isn't very good
 `grunt js-hint` to jshint on '/js' files and `grunt html-hint` to root html files (index.html)
 
 `grunt build` to make production build to '/build' folder
+
+## TODO
+
+- move files to 'src' folder and change things accordingly in grunt
