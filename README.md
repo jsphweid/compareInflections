@@ -19,5 +19,6 @@ Currently, the algorithm used to determine how the pitch changes isn't very good
 `grunt build` to make production build to '/build' folder
 
 ## TODO
-
 - move files to 'src' folder and change things accordingly in grunt
+- improve pitch detection algorithm
+- figure out why it is going so slow!
