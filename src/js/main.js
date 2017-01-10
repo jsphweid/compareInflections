@@ -122,7 +122,6 @@ function stopRecording(fOrJ) { // button / this used to be passed in... (on a <b
 		if (fOrJ === 'f') fBox.updateSamples(buffer); // why doesnt j work???
 		if (fOrJ === 'j') jBox.updateSamples(buffer);
 	});
-   
 	recorder.clear();
 }
 
