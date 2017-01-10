@@ -9,21 +9,43 @@ module.exports = function(grunt) {
         // copy
         copy: {
             main: {
-                src: ['**/*', '!**/node_modules/**', '!**/offline/**', '!**/.gitignore', '!**/package.json', '!**/.git', '!**/Gruntfile.js', '!**/README.md'],
                 expand: true,
-                // cwd: 'compareInflections',
-                dest: 'build'
+                cwd: './src',
+                src: ['./**', '!./offline/**', '!./data/**'],
+                dest: './build'
             },
         },
 
+        // concat
+        concat: {
+            js: {
+                src: [ // in this order...
+                    './build/js/jquery.flot.min.js',
+                    './build/js/regression.min.js',
+                    './build/js/recorder.js',
+                    './build/js/pitch-detect.js',
+                    './build/js/main.js'
+                ],
+                dest: './build/js/concat.js'
+            },
+            css: {
+                src: './build/css/*.css',
+                dest: './build/css/concat.css'
+            }
+        },
+
+
         // clean
-        clean: ['**/build'],
+        clean: ['./build'],
 
         'string-replace': {
-            inline: {
-                files: {
-                    'build/': 'index.html'
-                },
+            dist: {
+                files: [{
+                    expand: true,
+                    cwd: './build',
+                    src: '*.html',
+                    dest: './build'
+                }],
                 options: {
                     replacements: [
                         {
@@ -45,6 +67,14 @@ module.exports = function(grunt) {
                         {
                             pattern: '<script src="offline/p5.js"></script>',
                             replacement: '<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.4/p5.min.js"></script>'
+                        },
+                        {
+                            pattern: '<script src="lib/jquery.flot.min.js"></script><script src="lib/regression.min.js"></script><script src="lib/recorder.js"></script><script src="js/pitch-detect.js"></script><script src="js/main.js"></script>',
+                            replacement: '<script src="js/concat.min.js"></script>'
+                        },
+                        {
+                            pattern: '<link rel="stylesheet" type="text/css" href="css/main.css">',
+                            replacement: '<link rel="stylesheet" type="text/css" href="css/concat.css">'
                         }
                     ]
                 }
@@ -54,16 +84,13 @@ module.exports = function(grunt) {
         uglify: {
             development: {
                 files: [{
-                    expand: true,
-                    cwd: './build/',
-                    src: '**/js/*.js',
-                    dest: './build/'
+                    // expand: true,
+                    // cwd: './build/',
+                    src: 'build/js/concat.js',
+                    dest: 'build/js/concat.min.js'
                 }]
             },
             options: {
-                compress: {
-                    // drop_console: true // dropping the console here takes away some critical function
-                }
             }
         },
 
@@ -74,7 +101,7 @@ module.exports = function(grunt) {
             },
             build: {
                 expand: true,
-                src: './build/js/*.js',
+                src: 'build/js/concat.js',
                 dest: ''
             }
         },
@@ -83,7 +110,7 @@ module.exports = function(grunt) {
             options: {
                 esnext: true
             },
-            files: ['js/*.js']
+            files: ['src/js/*.js']
         },
 
         htmlhint: {
@@ -98,15 +125,13 @@ module.exports = function(grunt) {
                     'src-not-empty': true,
                     'img-alt-required': true
                 },
-                src: ['./*.html']
+                src: ['./src/*.html']
             }
         },
 
         htmlmin: {
             dev: {
                 options: {
-                    removeEmptyAttributes: true,
-                    removeEmptyElements: true,
                     removeRedundantAttributes: true,
                     removeComments: true,
                     removeOptionalTags: true,
@@ -123,7 +148,6 @@ module.exports = function(grunt) {
 
 
 
-
     // Load the plugin that provides the "uglify" task.
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-jshint');
@@ -133,9 +157,10 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-babel');
     grunt.loadNpmTasks('grunt-htmlhint');
     grunt.loadNpmTasks('grunt-contrib-htmlmin');
+    grunt.loadNpmTasks('grunt-contrib-concat');
 
     grunt.registerTask('js-hint', ['jshint']);
     grunt.registerTask('html-hint', ['htmlhint']);
-    grunt.registerTask('build', ['clean', 'copy', 'string-replace', 'babel', 'uglify', 'htmlmin']);
+    grunt.registerTask('build', ['clean', 'copy', 'string-replace', 'concat', 'babel', 'uglify', 'htmlmin']);
 
 };
