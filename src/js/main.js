@@ -3,6 +3,9 @@ var fRecording = false;
 var jRecording = false;
 var fired = false;
 
+var WIDTH = 500;
+var HEIGHT = 500;
+
 // recorder global vars
 var audio_context;
 var recorder;
@@ -58,11 +61,6 @@ $( document ).ready(function() {
 
 
 });
-
-
-
-
-
 
 function bootRecorder() {
 	try {
@@ -154,11 +152,12 @@ function getBufferCallback( buffers ) {
 // 	});
 // }
 
-function Box(centX, color) {
-	this.centerX = centX; // should be displayWidth * 1/4 and * 3/4
-	this.centerY = displayHeight / 4;
-	this.width = displayWidth / 2;
-	this.height = displayHeight / 2;
+function Box(p5, centX, color) {
+	this.p5 = p5
+	this.centerX = centX; // should be WIDTH * 1/4 and * 3/4
+	this.centerY = HEIGHT / 4;
+	this.width = WIDTH / 2;
+	this.height = HEIGHT / 2;
 	this.updateP5js = false;
 	this.heightBooster = 100;
 	this.currentArray = [];
@@ -166,7 +165,7 @@ function Box(centX, color) {
 	this.color = color;
 
 	this.erase = function() {
-		fill(255);
+		this.p5.fill(255);
 		this.drawBorder();
 	};
 
@@ -180,7 +179,7 @@ function Box(centX, color) {
 		console.log(this.currentArray);
 		this.erase();
 		for (let i = 0; i < this.currentArray.length; i++) {
-			point(
+			this.p5.point(
 					(((i * this.width) / this.currentArray.length) + (this.centerX - (this.width / 2))), // x
 				    (this.currentArray[i] * this.heightBooster) + this.centerY // y
 				 );
@@ -192,7 +191,7 @@ function Box(centX, color) {
 		this.positiveArr = [];
 		this.negativeArr = [];
 		this.erase();
-		strokeWeight(1);
+		this.p5.strokeWeight(1);
 		for (let i = 0; i < this.currentArray.length; i+=80) {
 			var currentVal = this.currentArray[i];
 			if (currentVal >= 0) {
@@ -203,22 +202,22 @@ function Box(centX, color) {
 		}
 
 		// draw
-		fill(this.color);
-		beginShape();
+		this.p5.fill(this.color);
+		this.p5.beginShape();
 		for (let i = 0; i < this.positiveArr.length; i++) {
-			vertex(
+			this.p5.vertex(
 					(((i * this.width) / this.positiveArr.length) + (this.centerX - (this.width / 2))), // x
 				    (this.positiveArr[i] * this.heightBooster) + this.centerY // y
 				);
 		}
 		for (let i = this.negativeArr.length - 1; i >= 0; i--) { // go backwards
-			vertex(
+			this.p5.vertex(
 					(((i * this.width) / this.negativeArr.length) + (this.centerX - (this.width / 2))), // x
 				    (this.negativeArr[i] * this.heightBooster) + this.centerY // y
 				);
 		}
 
-		endShape(CLOSE);
+		this.p5.endShape(this.p5.CLOSE);
 
 		this.updateP5js = true;
 	};
@@ -252,11 +251,11 @@ function Box(centX, color) {
 	};
 
 	this.drawPitchArray = function() {
-		strokeWeight(7);
-		stroke(127);
+		this.p5.strokeWeight(7);
+		this.p5.stroke(127);
 		for (let i = 0; i < this.pitchArray.length; i++) {
 			if (this.pitchArray[i] !== -1) {
-				point(
+				this.p5.point(
 						(((i * this.width) / this.pitchArray.length) + (this.centerX - (this.width / 2))), // x
 					    this.height - (((this.pitchArray[i]) * this.height) / 2000) // y
 				);
@@ -266,8 +265,8 @@ function Box(centX, color) {
 
 	this.drawSmoothGestures = function() { 
 
-
 		// consider normalizing that audio if the algorithm rejects values under a certain volume level
+		const p5js = this.p5
 
 		var makeArrayOfGestures = function(pitchArray) {
 
@@ -305,17 +304,17 @@ function Box(centX, color) {
 
 
 		var drawSmoothGesture = function(gesture, originalLength, width, height, centerX) {
-			strokeWeight(7);
-			stroke(0);
-			noFill();
-			beginShape();
+			p5js.strokeWeight(7);
+			p5js.stroke(0);
+			p5js.noFill();
+			p5js.beginShape();
 			// debugger;
 			for (let j = 0; j < gesture.length; j++) { // iterate through each coordinate in each gesture
 				var x = (((gesture[j][0] * width) / originalLength) + (centerX - (width / 2)));
 				var y = height - ((gesture[j][1] * height) / 2000);
-				curveVertex(x, y);
+				p5js.curveVertex(x, y);
 			}
-			endShape();
+			p5js.endShape();
 		};
 
 		// draw smooth gestures
@@ -328,50 +327,49 @@ function Box(centX, color) {
 	};
 
 	this.drawBorder = function() {
-		strokeWeight(1);
-		rect(this.centerX - (this.width / 2), 0, this.width, this.height);
+		this.p5.strokeWeight(2);
+		this.p5.rect(this.centerX - (this.width / 2), 0, this.width, this.height);
 	};
 }
 
 
 var fBox;
 var jBox;
-// Box.prototype.updateImage = function() {
-// };
 
-
-function setup() {
-	createCanvas(displayWidth, displayHeight);
-	fBox = new Box(displayWidth * 0.25, 'red');
-	jBox = new Box(displayWidth * 0.75, 'blue');
-	fBox.drawBorder();
-	jBox.drawBorder();
-	frameRate(5); // doesn't need to be that fast...
-
-}
-
-function draw() {
-	if (fBox.updateP5js) {
-		fBox.updateAndDrawSamplesFilledIn();
-
-		fBox.makePitchArray();
-		fBox.drawSmoothGestures();
-		// fBox.drawPitchArray();
-
-		fBox.updateP5js = false;
+const sketch = function(p) {
+	p.setup = function() {
+		p.createCanvas(WIDTH, HEIGHT);
+		fBox = new Box(p, WIDTH * 0.25, 'red');
+		jBox = new Box(p, WIDTH * 0.75, 'blue');
+		fBox.drawBorder();
+		jBox.drawBorder();
+		p.frameRate(5); // doesn't need to be that fast...
 	}
 
-	if (jBox.updateP5js) {
-		jBox.updateAndDrawSamplesFilledIn();
-
-		jBox.makePitchArray();
-		jBox.drawSmoothGestures();
-		// jBox.drawPitchArray();
-
-		jBox.updateP5js = false;
+	p.draw = function() {
+		if (fBox.updateP5js) {
+			fBox.updateAndDrawSamplesFilledIn();
+	
+			fBox.makePitchArray();
+			fBox.drawSmoothGestures();
+			// fBox.drawPitchArray();
+	
+			fBox.updateP5js = false;
+		}
+	
+		if (jBox.updateP5js) {
+			jBox.updateAndDrawSamplesFilledIn();
+	
+			jBox.makePitchArray();
+			jBox.drawSmoothGestures();
+			// jBox.drawPitchArray();
+	
+			jBox.updateP5js = false;
+		}
 	}
-
 }
+
+new p5(sketch, 'p5jsDiv')
 
 
 
