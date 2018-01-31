@@ -7,11 +7,6 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <style>
-        body {
-            height: 100vh;
-        }
-    </style>
     <!--  all files in the offline folder will be replaced by their cdn minified equivalents -->
 
     <!-- bootstrap -->
@@ -26,41 +21,38 @@
 </head>
 
 <body>
-    <div class="container">
+    <div class="compareInflections-title">
+        <h1>Compare Inflections</h1>
+    </div>
 
-        <div class="row" style="text-align: center; width: 80%; margin: 0 auto;">
-            <h2>Compare Inflections</h2>
-        </div>
+    <div id="p5jsDiv" class="row"></div>
+    <ul id="recordingslist"></ul>
 
-        <div id="p5jsDiv" class="row"></div>
-        <ul id="recordingslist"></ul>
+    <div class="compareInflections-description">
+        <p>
+            One evening I was talking to a lady from another country and we were comparing
+            how we say the same words differently. Besides our obvious distinctive timbres,
+            the rise and fall of our voice made different shapes (inflections). I thought it
+            would be neat to experiment with an app that visualized the different inflections
+            and allowed people to quickly compare them.
+        </p>
+        <p>
+            Currently whistling produces the best results. I'm slowly learning more about
+            Digital Signal Processing and am trying to find a more accurate and more
+            efficient pitch detection algorithm.
+        </p>
+        <p>
+            To operate, hold 'f' or 'j' (left screen / right screen) and say the word.
+            As soon as you are finished, release and wait until the image appears.
+            The graph shows a familiar amplitude wave drawing with a black line that
+            best guesses the contour of your sound.
+        </p>
+        <p>
+            Project is hosted <a href="https://github.com/jsphweid/compareInflections">here</a>.
+        </p>
+    </div>
+    
 
-        <div>
-            <p>
-                One evening I was talking to a lady from another country and we were comparing
-                how we say the same words differently. Besides our obvious distinctive timbres,
-                the rise and fall of our voice made different shapes (inflections). I thought it
-                would be neat to experiment with an app that visualized the different inflections
-                and allowed people to quickly compare them.
-            </p>
-            <p>
-                Currently whistling produces the best results. I'm slowly learning more about
-                Digital Signal Processing and am trying to find a more accurate and more
-                efficient pitch detection algorithm.
-            </p>
-            <p>
-                To operate, hold 'f' or 'j' (left screen / right screen) and say the word.
-                As soon as you are finished, release and wait until the image appears.
-                The graph shows a familiar amplitude wave drawing with a black line that
-                best guesses the contour of your sound.
-            </p>
-            <p>
-                Project is hosted <a href="https://github.com/jsphweid/compareInflections">here</a>.
-            </p>
-        </div>
-        
-
-    </div> <!-- /container -->
 
 
 

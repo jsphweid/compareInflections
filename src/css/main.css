@@ -4,12 +4,31 @@ body {
     padding: 16px;
 }
 
+#defaultCanvas0 {
+    margin: 0 auto;
+    display: block;
+    height: 500px;
+}
 
+.compareInflections-title {
+    text-align: center;
+}
 
+.compareInflections-title h1 {
+    margin: 32px 0;
+}
 
+.compareInflections-description {
+    position: absolute;
+    top: 400px;
+    margin-right: 16px;
+}
 
-
-
+.compareInflections-description p {
+    margin: 16px auto;
+    width: 80%;
+    text-align: center;
+}
 
 
 

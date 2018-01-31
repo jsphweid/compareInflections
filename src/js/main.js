@@ -21,21 +21,19 @@ $( document ).ready(function() {
     	if (!fired) {
     		fired = true;
 		    switch(e.which) {
-
-		        case 70: // f
-		        startRecording('f');
-		        fRecording = true;
-		        break;
-
-		        case 74: // j
-		        startRecording('j');
-		        jRecording = true;
-		        break;
-
+				case 70: // f
+					e.preventDefault();
+					startRecording('f');
+					fRecording = true;
+					break;
+				case 74: // j
+					e.preventDefault();
+					startRecording('j');
+					jRecording = true;
+					break;
 		        default: return; // exit this handler for other keys
 		    }
 		}
-	    e.preventDefault(); // prevent the default action (scroll / move caret)
 	});
 
 	$(document).keyup(function(e) {
