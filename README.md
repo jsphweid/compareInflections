@@ -12,13 +12,14 @@ Currently, the algorithm used to determine how the pitch changes isn't very good
 
 `npm install` to download dependencies
 
-`http-server` to serve up the app
+`npm run start` to serve up the app
 
-`grunt js-hint` to jshint on '/js' files and `grunt html-hint` to root html files (index.html)
+`npm run build` to make production build to '/build' folder
 
-`grunt build` to make production build to '/build' folder
+`npm run deploy` to deploy to AWS bucket (for me only obviously)
 
 ## TODO
 - move files to 'src' folder and change things accordingly in grunt
 - improve pitch detection algorithm
 - figure out why it is going so slow!
+- make adaptive
