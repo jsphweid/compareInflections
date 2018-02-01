@@ -115,8 +115,9 @@ function stopRecording(fOrJ) { // button / this used to be passed in... (on a <b
 	// create WAV download link using audio data blob
 	// createDownloadLink();
 	recorder.getBuffer(function(buffer) {
-		if (fOrJ === 'f') fBox.updateSamples(buffer); // why doesnt j work???
-		if (fOrJ === 'j') jBox.updateSamples(buffer);
+		const box = (fOrJ === 'f') ? fBox : jBox
+		box.updateSamples(buffer)
+		box.postLoading()
 	});
 	recorder.clear();
 }
@@ -183,6 +184,13 @@ function Box(p5, centX, color) {
 				 );
 		}
 	};
+
+	this.postLoading = function() {
+		this.erase()
+		this.p5.fill(this.color);
+		this.p5.textSize(32);
+		this.p5.text('Loading...', this.centerX - 60, this.centerY);
+	}
 
 	this.updateAndDrawSamplesFilledIn = function() {
 		// vertex, begin shape, separate position and negative
