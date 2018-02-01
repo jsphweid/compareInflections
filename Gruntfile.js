@@ -106,29 +106,6 @@ module.exports = function(grunt) {
             }
         },
 
-        jshint: {
-            options: {
-                esnext: true
-            },
-            files: ['src/js/*.js']
-        },
-
-        htmlhint: {
-            templates: {
-                options: {
-                    'attr-lower-case': true,
-                    'attr-value-not-empty': true,
-                    'tag-pair': true,
-                    'tagname-lowercase': true,
-                    'id-class-value': true,
-                    'id-class-unique': true,
-                    'src-not-empty': true,
-                    'img-alt-required': true
-                },
-                src: ['./src/*.html']
-            }
-        },
-
         htmlmin: {
             dev: {
                 options: {
@@ -150,17 +127,13 @@ module.exports = function(grunt) {
 
     // Load the plugin that provides the "uglify" task.
     grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-string-replace');
     grunt.loadNpmTasks('grunt-babel');
-    grunt.loadNpmTasks('grunt-htmlhint');
     grunt.loadNpmTasks('grunt-contrib-htmlmin');
     grunt.loadNpmTasks('grunt-contrib-concat');
 
-    grunt.registerTask('js-hint', ['jshint']);
-    grunt.registerTask('html-hint', ['htmlhint']);
     grunt.registerTask('build', ['clean', 'copy', 'string-replace', 'concat', 'babel', 'uglify', 'htmlmin']);
 
 };
